@@ -19,11 +19,11 @@ resource "hcloud_server" "web" {
   ssh_keys  = ["${data.hcloud_ssh_key.ssh_key.id}"]
 }
 
-# Create a Volume 
+/* # Create a Volume 
 resource "hcloud_volume" "storage" {
   name       = "my-volume"
   size       = 10
   server_id  = "${hcloud_server.web.id}"
   automount  = true
   format     = "ext4"
-}
+} */
