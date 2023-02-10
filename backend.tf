@@ -1,9 +1,9 @@
 terraform {
   cloud {
-    organization = "Hetzner-GMBH-infra"
+    organization = "Testing_providers"
 
     workspaces {
-      name = "infra"
+      name = "hetzner"
     }
   }
 }
