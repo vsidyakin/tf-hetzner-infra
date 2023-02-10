@@ -2,10 +2,10 @@
 resource "hcloud_server" "terraform-testing" {
   name        = "terraform-testing.com"
   image       = "debian-11"
-  server_type = "${var.standard}"
+  server_type = "${var.tiny}"
   backups     = "false"
   placement_group_id = hcloud_placement_group.terraform-testing.id
-  datacenter  = "ash-dc1"
+  datacenter  = "fsn1-dc1"
   ssh_keys = data.hcloud_ssh_keys.all_keys.ssh_keys.*.name
   firewall_ids = [hcloud_firewall.terraform-testing-fw.id]
   public_net {
@@ -31,7 +31,7 @@ resource "hcloud_network" "net01" {
 resource "hcloud_network_subnet" "subnet01" {
   network_id   = hcloud_network.net01.id
   type         = "cloud"
-  network_zone = "us-east"
+  network_zone = "eu-central"
   ip_range     = "10.0.1.0/24"
 }
 # Network attachment
@@ -76,7 +76,7 @@ resource "hcloud_firewall" "terraform-testing-fw" {
     protocol  = "tcp"
     port      = "22"
     source_ips = [
-      "165.22.32.53/32",
+      #"165.22.32.53/32",
       "79.130.18.58/32"
     ]
   }
