@@ -1,0 +1,36 @@
+#cloud-config
+users:
+  - name: vlads
+    groups: users, admin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDC4JTuMlLr9CvQBM7Dc9V+2bGKzb2QgooT3HVLfwMoqghtYp5BsgaDmgdfOatUC4a8lGsVCLaVWZtcoyBqiuDc2cMkgQ8fwQso54HKQWvC7TteDKf6vgrILrdWrmnWMhMEBLGt7kTaU+qZlYsWnaR4PSua3o6KRN1GDuqZqAIvSro3F6jxXWqfTsFkEYzBCx2AA6c++kJIsUREOW+aiqFJaznvk3iGHN9Mf6zw3FKSJ2q8nqU0CZOspJAM/5/KfPbRghHXfNz/0BPkiSPMobB/XLnRkTSyOiJgR0poWkm2Yjrpfdky/bPJR0kYR87hYCixXUlk1i1XIxS/W09j8sBHcRrg2SdpMc2zZY1Va/xizf3SngaZBEFFJN3LfHe3A9zxNVQn1rL9KGYmtCnlvGndB6kaK5lO5xyPk87iThF1jde0sxfuFw+yufztzaIRmg9Uy4CTg2m5yekswFC4UtRhrd7Po97Q4haQdt5BwUGsQGxyxN0vz/ipeq5DY8ltdBE= v
+package_update: true
+package_upgrade: true
+packages:
+  - nginx
+  - ca-certificates
+  - curl
+  - gnupg
+  - lsb-release
+runcmd:
+  - systemctl enable nginx
+  - sed -ie '/^PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
+  - sed -ie '/^PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
+  - sed -ie '/^X11Forwarding/s/^.*$/X11Forwarding no/' /etc/ssh/sshd_config
+  - sed -ie '/^#MaxAuthTries/s/^.*$/MaxAuthTries 2/' /etc/ssh/sshd_config
+  - sed -ie '/^#AllowTcpForwarding/s/^.*$/AllowTcpForwarding no/' /etc/ssh/sshd_config
+  - sed -ie '/^#AllowAgentForwarding/s/^.*$/AllowAgentForwarding no/' /etc/ssh/sshd_config
+  - sed -ie '/^#AuthorizedKeysFile/s/^.*$/AuthorizedKeysFile .ssh/authorized_keys/' /etc/ssh/sshd_config
+  - sed -i '$a AllowUsers vlads' /etc/ssh/sshd_config
+  - systemctl restart ssh
+  - rm /var/www/html/*
+  - echo "Hello! I am Nginx @ $(curl -s ipinfo.io/ip)! This record added at $(date -u)." >>/var/www/html/index.html
+  - mkdir -m 0755 -p /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg trusted=yes] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - chmod a+r /etc/apt/keyrings/docker.gpg
+  - apt-get update -y
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - service docker start
