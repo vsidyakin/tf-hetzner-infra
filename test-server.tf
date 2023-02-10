@@ -4,7 +4,7 @@ resource "hcloud_server" "terraform-testing" {
   image       = "debian-11"
   server_type = "${var.tiny}"
   backups     = "false"
-  placement_group_id = hcloud_placement_group.terraform-testing.id
+  placement_group_id = hcloud_placement_group.infra.id
   datacenter  = "fsn1-dc1"
   ssh_keys = data.hcloud_ssh_keys.all_keys.ssh_keys.*.name
   firewall_ids = [hcloud_firewall.terraform-testing-fw.id]
@@ -86,7 +86,7 @@ resource "hcloud_firewall" "terraform-testing-fw" {
 }
 
 ## Uncomment to create Volume 
-resource "hcloud_volume" "storage" {
+/* resource "hcloud_volume" "storage" {
   name       = "test-volume"
   size       = 10
   server_id  = "${hcloud_server.terraform-testing.id}"
@@ -95,13 +95,14 @@ resource "hcloud_volume" "storage" {
   labels = {
     "tag" : "terraform-testing"
   }
-}
+} */
 
 ## Placement Group
-resource "hcloud_placement_group" "terraform-testing" {
-  name = "terraform-testing"
+resource "hcloud_placement_group" "infra" {
+  name = "infra"
   type = "spread"
   labels = {
-    tag = "terraform-testing"
+    tag = "infra",
+    tag = "created in Terraform"
   }
 }
