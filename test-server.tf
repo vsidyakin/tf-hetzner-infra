@@ -102,7 +102,7 @@ resource "hcloud_placement_group" "infra" {
   name = "infra"
   type = "spread"
   labels = {
-    tag = "infra"
-    tag = "created in Terraform"
+    "tag" : "infra"
+    "tag" : "created in Terraform"
   }
 }
