@@ -23,22 +23,22 @@ resource "hcloud_load_balancer_service" "load_balancer_service01" {
     protocol         = "http"
 }
 
-# DNS
+/* # DNS
 resource "hcloud_rdns" "load_balancer_master" {
   load_balancer_id = "${hcloud_load_balancer.testing_load_balancer.id}"
   ip_address       = "${hcloud_load_balancer.testing_load_balancer.ipv4}"
   dns_ptr          = "lb.vlad.linkpc.net"
-}
+} */
 
 # Sert
-resource "hcloud_managed_certificate" "managed_cert" {
+/* resource "hcloud_managed_certificate" "managed_cert" {
   name         = "managed_cert"
   domain_names = ["lb.vlad.linkpc.net"]
   labels = {
     label_1 = "value_1"
     label_2 = "value_2"
   }
-}
+} */
 
 resource "hcloud_uploaded_certificate" "lb_certificate" {
     name = "test-certificate-%d"
