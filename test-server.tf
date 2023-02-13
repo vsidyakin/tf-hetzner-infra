@@ -4,7 +4,7 @@ resource "hcloud_server" "terraform-testing01" {
   image       = "debian-11"
   server_type = "${var.tiny}"
   backups     = "false"
-  placement_group_id = hcloud_placement_group.infra.id
+  placement_group_id = hcloud_placement_group.infra01.id
   datacenter  = "fsn1-dc14"
   ssh_keys = data.hcloud_ssh_keys.all_keys.ssh_keys.*.name
   firewall_ids = [hcloud_firewall.terraform-testing-fw.id]
@@ -27,7 +27,7 @@ resource "hcloud_server" "terraform-testing02" {
   image       = "debian-11"
   server_type = "${var.tiny}"
   backups     = "false"
-  placement_group_id = hcloud_placement_group.infra.id
+  placement_group_id = hcloud_placement_group.infra01.id
   datacenter  = "fsn1-dc14"
   ssh_keys = data.hcloud_ssh_keys.all_keys.ssh_keys.*.name
   firewall_ids = [hcloud_firewall.terraform-testing-fw.id]
@@ -115,11 +115,23 @@ resource "hcloud_firewall" "terraform-testing-fw" {
   }
 }
 
+## Load Balancer
+
+resource "hcloud_load_balancer" "testing_load_balancer" {
+  name               = "testing-load-balancer"
+  load_balancer_type = "lb11"
+  location           = "fsn1"
+  target {
+    type      = "server"
+    server_id = hcloud_server.terraform-testing01.id
+  }
+}
+
 ## Placement Group
-resource "hcloud_placement_group" "infra" {
-  name = "infra"
+resource "hcloud_placement_group" "infra01" {
+  name = "infra01"
   type = "spread"
   labels = {
-    "tag" : "infra"
+    "tag" : "infra01"
   }
 }
