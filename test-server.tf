@@ -115,18 +115,6 @@ resource "hcloud_firewall" "terraform-testing-fw" {
   }
 }
 
-## Load Balancer
-
-resource "hcloud_load_balancer" "testing_load_balancer" {
-  name               = "testing-load-balancer"
-  load_balancer_type = "lb11"
-  location           = "fsn1"
-  target {
-    type      = "server"
-    server_id = hcloud_server.terraform-testing01.id
-  }
-}
-
 ## Placement Group
 resource "hcloud_placement_group" "infra01" {
   name = "infra01"
