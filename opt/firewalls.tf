@@ -37,6 +37,15 @@
       "79.130.18.58/32"
     ]
   }
+  rule {
+    direction = "in"
+    protocol  = "tcp"
+    port      = "2020"
+    source_ips = [
+      #"165.22.32.53/32",
+      "79.130.18.58/32"
+    ]
+  }
   labels = {
     "tag" : "terraform-testing"
   }
